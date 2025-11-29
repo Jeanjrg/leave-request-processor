@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaveApplicationController;
+use App\Http\Controllers\LeaderApprovalController;
+use App\Http\Controllers\HRDApprovalController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DivisionController;
 use Illuminate\Support\Facades\Route;
@@ -61,9 +63,11 @@ Route::middleware(['auth', 'role:HRD'])->prefix('hrd')->name('hrd.')->group(func
     // Rute Dashboard HRD
     Route::get('/dashboard', [DashboardController::class, 'hrdIndex'])->name('dashboard');
 
-    // Rute Verifikasi Akhir (Tahap 5)
-    // Route::get('approvals', [ApprovalController::class, 'finalList'])->name('approvals.final');
-    // ...
+    // Rute Verifikasi Akhir (Final Approval)
+    Route::get('approvals', [HRDApprovalController::class, 'index'])->name('approvals.index');
+    Route::get('approvals/{leave}', [HRDApprovalController::class, 'show'])->name('approvals.show');
+    Route::post('approvals/{leave}/approve', [HRDApprovalController::class, 'approve'])->name('approvals.approve');
+    Route::post('approvals/{leave}/reject', [HRDApprovalController::class, 'reject'])->name('approvals.reject');
 });
 
 
@@ -72,9 +76,11 @@ Route::middleware(['auth', 'role:Ketua Divisi'])->prefix('leader')->name('leader
     // Rute Dashboard Ketua Divisi
     Route::get('/dashboard', [DashboardController::class, 'leaderIndex'])->name('dashboard');
 
-    // Rute Verifikasi Awal (Tahap 5)
-    // Route::get('approvals', [ApprovalController::class, 'leaderList'])->name('approvals.pending');
-    // ...
+    // Rute Verifikasi Awal (First Approval)
+    Route::get('approvals', [LeaderApprovalController::class, 'index'])->name('approvals.index');
+    Route::get('approvals/{leave}', [LeaderApprovalController::class, 'show'])->name('approvals.show');
+    Route::post('approvals/{leave}/approve', [LeaderApprovalController::class, 'approve'])->name('approvals.approve');
+    Route::post('approvals/{leave}/reject', [LeaderApprovalController::class, 'reject'])->name('approvals.reject');
 });
 
 
