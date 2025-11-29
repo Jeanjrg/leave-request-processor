@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'division_id',
+        'initial_leave_quota',
+        'current_leave_quota',
     ];
 
     /**
@@ -44,5 +48,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+     public function division(): BelongsTo
+    {
+        return $this->belongsTo(Division::class);
+    }
+
+    // --- ACCESSOR/HELPER ROLE ---
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'Admin';
+    }
+
+    public function isHRD(): bool
+    {
+        return $this->role === 'HRD';
+    }
+
+    public function isLeader(): bool
+    {
+        return $this->role === 'Ketua Divisi';
     }
 }
