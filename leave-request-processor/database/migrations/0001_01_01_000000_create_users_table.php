@@ -12,12 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
+            // Primary id and common Laravel user columns
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('name')->nullable();
+            $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
+
+            // Application-specific columns
+            $table->string('role')->default('Karyawan'); // Admin, Karyawan, Ketua Divisi, HRD
+            $table->unsignedBigInteger('division_id')->nullable(); // Relasi ke Divisi
+            $table->integer('initial_leave_quota')->default(12); // Kuota cuti awal
+            $table->integer('current_leave_quota')->default(12); // Sisa kuota cuti
+
+            // foreign key will be added in a separate migration so `divisions`
+            // definitely exists when the constraint is created.
+
             $table->timestamps();
         });
 
