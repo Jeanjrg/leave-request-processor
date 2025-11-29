@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -50,9 +52,19 @@ class User extends Authenticatable
         ];
     }
 
-     public function division(): BelongsTo
+    public function division(): BelongsTo
     {
         return $this->belongsTo(Division::class);
+    }
+
+    public function leaderOfDivision(): HasMany
+    {
+        return $this->hasMany(Division::class, 'leader_id');
+    }
+
+    public function leaveApplications(): HasMany
+    {
+        return $this->hasMany(LeaveApplication::class);
     }
 
     // --- ACCESSOR/HELPER ROLE ---
@@ -70,5 +82,10 @@ class User extends Authenticatable
     public function isLeader(): bool
     {
         return $this->role === 'Ketua Divisi';
+    }
+
+    public function isEmployee(): bool
+    {
+        return $this->role === 'Karyawan';
     }
 }

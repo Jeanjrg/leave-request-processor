@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DashboardController; // Tambahkan ini
-use App\Http\Controllers\Admin\UserController; // Akan kita buat nanti
-use App\Http\Controllers\Admin\DivisionController; // Akan kita buat nanti
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LeaveApplicationController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\DivisionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,10 +79,10 @@ Route::middleware(['auth', 'role:Ketua Divisi'])->prefix('leader')->name('leader
 
 
 // --- KARYAWAN (Self-Service) ---
-// Route::middleware(['auth', 'role:Karyawan|Ketua Divisi'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     // Rute Pengajuan Cuti (Tahap 4)
-    // Route::resource('leaves', LeaveApplicationController::class);
-// });
+    Route::resource('leaves', LeaveApplicationController::class);
+});
 
 
 require __DIR__.'/auth.php';

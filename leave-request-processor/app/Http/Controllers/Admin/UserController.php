@@ -16,15 +16,34 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        // 1. Ambil data dengan relasi Divisi
-        $users = User::with('division')
-            ->orderBy('name')
-            ->paginate(15);
-        
-        // 2. Ambil daftar divisi untuk filter
-        $divisions = Division::all();
+        $query = User::with('division');
 
-        // TODO: Implementasi Filter dan Sortir (Tahap lanjutan)
+        // Filter by role
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        // Filter by division
+        if ($request->filled('division')) {
+            $query->where('division_id', $request->division);
+        }
+
+        // Search by name or email
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Sort
+        $sortBy = $request->input('sort_by', 'name');
+        $sortDir = $request->input('sort_dir', 'asc');
+        $query->orderBy($sortBy, $sortDir);
+
+        $users = $query->paginate(15);
+        $divisions = Division::all();
 
         return view('admin.users.index', compact('users', 'divisions'));
     }
@@ -34,10 +53,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        // Role yang tersedia untuk pembuatan user:
         $roles = ['Karyawan', 'Ketua Divisi', 'HRD', 'Admin'];
-
-        // Ambil daftar divisi (jika Admin ingin langsung menetapkan divisi)
         $divisions = Division::all();
 
         return view('admin.users.create', compact('roles', 'divisions'));
@@ -48,20 +64,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input sesuai kebutuhan proyek
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|max:255',
             'role' => ['required', 'string', Rule::in(['Karyawan', 'Ketua Divisi', 'HRD', 'Admin'])],
             'initial_leave_quota' => 'nullable|integer|min:0',
-            'division_id' => 'nullable|exists:divisions,id', // Cek apakah ID Divisi ada
+            'division_id' => 'nullable|exists:divisions,id',
         ]);
 
-        // 2. Tentukan kuota cuti awal
         $initialQuota = $validated['initial_leave_quota'] ?? 12;
 
-        // 3. Buat pengguna
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -69,12 +82,71 @@ class UserController extends Controller
             'role' => $validated['role'],
             'division_id' => $validated['division_id'],
             'initial_leave_quota' => $initialQuota,
-            'current_leave_quota' => $initialQuota, // Kuota awal sama dengan kuota saat ini
+            'current_leave_quota' => $initialQuota,
         ]);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Pengguna baru berhasil ditambahkan.');
     }
 
-    // TODO: Implementasi show(), edit(), update(), dan destroy()
+    /**
+     * Menampilkan detail pengguna.
+     */
+    public function show(User $user)
+    {
+        return view('admin.users.show', compact('user'));
+    }
+
+    /**
+     * Menampilkan form untuk edit pengguna.
+     */
+    public function edit(User $user)
+    {
+        $roles = ['Karyawan', 'Ketua Divisi', 'HRD', 'Admin'];
+        $divisions = Division::all();
+
+        return view('admin.users.edit', compact('user', 'roles', 'divisions'));
+    }
+
+    /**
+     * Update pengguna di database.
+     */
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'password' => 'nullable|string|min:8|max:255',
+            'role' => ['required', 'string', Rule::in(['Karyawan', 'Ketua Divisi', 'HRD', 'Admin'])],
+            'division_id' => 'nullable|exists:divisions,id',
+        ]);
+
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Pengguna berhasil diperbarui.');
+    }
+
+    /**
+     * Menghapus pengguna.
+     */
+    public function destroy(User $user)
+    {
+        // Cegah penghapusan jika user adalah leader
+        if ($user->leaderOfDivision()->exists()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Tidak dapat menghapus user yang menjadi ketua divisi.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Pengguna berhasil dihapus.');
+    }
 }
