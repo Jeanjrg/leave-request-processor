@@ -33,7 +33,6 @@ class DashboardController extends Controller
     public function adminIndex()
     {
         $activeEmployees = User::where('role', 'Karyawan')->count();
-        $inactiveEmployees = User::where('role', 'Karyawan')->where('is_active', false)->count();
         $totalLeaveThisMonth = LeaveApplication::whereMonth('start_date', now()->month)
             ->whereYear('start_date', now()->year)
             ->count();
@@ -45,7 +44,6 @@ class DashboardController extends Controller
 
         return view('dashboard.admin', [
             'activeEmployees' => $activeEmployees,
-            'inactiveEmployees' => $inactiveEmployees,
             'totalLeaveThisMonth' => $totalLeaveThisMonth,
             'pendingApprovals' => $pendingApprovals,
             'totalDivisions' => $totalDivisions,
