@@ -7,7 +7,7 @@
             <div class="p-6 text-gray-900">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-semibold text-gray-900">Manajemen Divisi</h3>
-                    <a href="{{ route('admin.divisions.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md">
+                    <a href="{{ route('admin.divisions.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-black font-bold py-2 px-4 rounded-lg shadow-md">
                         + Tambah Divisi
                     </a>
                 </div>

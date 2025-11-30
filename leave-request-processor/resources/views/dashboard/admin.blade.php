@@ -23,7 +23,7 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="text-gray-600 text-sm font-semibold">Persetujuan Pending</div>
-                <div class="text-4xl font-bold text-yellow-600 mt-2">{{ $pendingApprovals }}</div>
+                <div class="text-4xl font-bold text-[#f5ab00] mt-2">{{ $pendingApprovals }}</div>
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -35,11 +35,11 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
             <h3 class="text-xl font-semibold text-gray-900 mb-4">Akses Cepat</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="{{ route('admin.users.index') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg text-center">
-                    Manajemen Pengguna
+                <a href="{{ route('admin.users.index') }}" role="button" class="inline-block w-1/2 bg-indigo-600 hover:bg-indigo-700 text-black font-bold py-4 px-8 rounded-lg text-center shadow">
+                    <p class="inline-block w-1/2 bg-indigo-600 hover:bg-indigo-700 text-black font-bold py-50 px-8 rounded-lg text-center shadow">📋 Manajemen Pengguna</p>
                 </a>
-                <a href="{{ route('admin.divisions.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-center">
-                    Manajemen Divisi
+                <a href="{{ route('admin.divisions.index') }}" role="button" class="inline-block w-1/2 bg-blue-600 hover:bg-blue-700 text-black font-bold py-4 px-8 rounded-lg text-center shadow">
+                    🗂️ Manajemen Divisi
                 </a>
             </div>
         </div>

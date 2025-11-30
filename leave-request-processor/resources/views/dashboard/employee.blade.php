@@ -3,7 +3,12 @@
 @section('content')
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-8">Dashboard Karyawan</h2>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">Dashboard Karyawan</h2>
+            <a href="{{ route('leaves.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg">
+                + Ajukan Cuti Baru
+            </a>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -33,13 +38,13 @@
         </div>
 
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Akses Cepat</h3>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Pengajuan Cuti Anda</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <a href="{{ route('leaves.index') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg text-center">
-                    Lihat Pengajuan Cuti Saya
+                    📋 Lihat Riwayat Pengajuan
                 </a>
                 <a href="{{ route('leaves.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-center">
-                    Ajukan Cuti Baru
+                    ➕ Ajukan Cuti Baru
                 </a>
             </div>
         </div>
